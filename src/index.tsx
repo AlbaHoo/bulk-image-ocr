@@ -8,13 +8,14 @@ import App from './App';
 import Bridge from './routes/bridge';
 import Exception404 from 'components/exception/404';
 import reportWebVitals from './reportWebVitals';
+import OcrPage from './routes/ocr-page';
+import ImageListDetail from './routes/image-list-detail';
 
 import './index.css';
 import Setup from 'routes/setup';
 import { overrideConsoleLogWithWinston } from 'utils/logger';
 import Signup from 'routes/signup';
 import Verification from 'routes/verification';
-import Setup2 from 'routes/setup2';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
@@ -54,8 +55,9 @@ root.render(
           <Route path="index.html" element={<Bridge />} />
           <Route path="login" element={<Setup />} />
           <Route path="signup" element={<Signup />} />
-          <Route path="home" element={<Verification />} />
-          <Route path="login2" element={<Setup2 />} />
+          <Route path="verification" element={<Verification />} />
+          <Route path="home" element={<OcrPage />} />
+          <Route path="image-list/:id" element={<ImageListDetail />} />
           <Route path="*" element={<Exception404 />} />
         </Route>
       </Routes>
