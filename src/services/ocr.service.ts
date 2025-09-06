@@ -29,7 +29,7 @@ export interface ProcessedOcrResult {
 }
 
 export class OcrService {
-  private baseUrl = 'http://image.tenty.co/ocr';
+  private baseUrl = 'https://image.tenty.co/ocr';
 
   private getDefaultOptions(): OcrRequestOptions {
     return {
