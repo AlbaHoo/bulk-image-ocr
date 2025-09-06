@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { message } from 'antd';
-import { generateImageHash } from 'utils/md5';
+import { generateImageHash } from '@/utils/md5';
 
 const useCamera = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);

@@ -1,8 +1,8 @@
-import { EStorageProperty } from 'interfaces/IClientApi';
+import { EStorageProperty } from '@/interfaces/IClientApi';
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import Parse from 'parse';
-import { lwsClientAPI } from 'platforms'; // Assuming you have a platform-specific API
+import { lwsClientAPI } from '@/platforms'; // Assuming you have a platform-specific API
 
 const withAuth = (Component: React.ComponentType) => {
   return (props: any) => {

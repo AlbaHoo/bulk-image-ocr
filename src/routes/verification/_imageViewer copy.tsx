@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { generateImageHash } from 'utils/md5';
+import { generateImageHash } from '@/utils/md5';
 import styles from './index.module.css';
-import { Apis } from 'services';
+import { Apis } from '@/services';
 import { message, Button } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
-import { downloadFile } from 'platforms';
+import { downloadFile } from '@/platforms';
 
 interface IPropTypes {
   containerHeight: number;

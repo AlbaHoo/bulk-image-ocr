@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginView from 'components/loginModal/loginView';
+import LoginView from '@/components/loginModal/loginView';
 import { Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 

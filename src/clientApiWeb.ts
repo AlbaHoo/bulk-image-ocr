@@ -1,5 +1,5 @@
-import { ILocalActivity, ILocalActivityOptions, ISelectedElement } from 'shared/typings';
-import { IClientApi } from './interfaces/IClientApi';
+import { ILocalActivity, ILocalActivityOptions, ISelectedElement } from '@/shared/typings';
+import { IClientApi } from '@/interfaces/IClientApi';
 import { v4 as uuidv4 } from 'uuid';
 
 // Generate agentId and store

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, message, Modal, Spin, Table, Tag } from 'antd';
-import { IMedia } from 'services/media.interface';
-import { Apis } from 'services';
-import { getSignature, url2base64 } from 'utils/image';
+import { IMedia } from '@/services/media.interface';
+import { Apis } from '@/services';
+import { getSignature, url2base64 } from '@/utils/image';
 
 interface IPropTypes {
   containerHeight: number;

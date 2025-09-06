@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Typography, Button, message, Modal } from 'antd';
 import './App.css';
-import { lwsClientAPI } from 'platforms';
+import { lwsClientAPI } from '@/platforms';
 
 const { Text } = Typography;
 

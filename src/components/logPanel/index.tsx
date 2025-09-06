@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Typography } from 'antd';
-import { lwsClientAPI } from 'platforms';
+import { lwsClientAPI } from '@/platforms';
 
 interface IProps {
   containerHeight?: number;

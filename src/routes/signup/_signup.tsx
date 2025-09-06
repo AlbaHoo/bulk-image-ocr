@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Typography } from 'antd';
-import useAuthCheck from 'hooks/useAuthCheck';
-import { Apis } from 'services';
+import useAuthCheck from '@/hooks/useAuthCheck';
+import { Apis } from '@/services';
 import styles from './index.module.css';
-import { lwsClientAPI } from 'platforms';
+import { lwsClientAPI } from '@/platforms';
 import SignupWithEmailView from './_signupWithEmailView';
 import { useNavigate } from 'react-router-dom';
 

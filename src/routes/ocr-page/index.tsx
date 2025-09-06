@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, InputNumber, message, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { Apis } from '../../services';
-import { ImageListItem } from '../../services/image-list.service';
+import { Apis } from '@/services';
+import { ImageListItem } from '@/services/image-list.service';
 
 const OcrPage: React.FC = () => {
   const [imageList, setImageList] = useState<ImageListItem[]>([]);

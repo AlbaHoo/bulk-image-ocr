@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Upload, Image, message, Spin, Typography } from 'antd';
 import { PlusOutlined, DeleteOutlined, LoadingOutlined, EyeOutlined } from '@ant-design/icons';
-import { Apis } from '../services';
-import { ImageItem } from '../services/image-item.service';
+import { Apis } from '@/services';
+import { ImageItem } from '@/services/image-item.service';
 
 const { Text } = Typography;
 

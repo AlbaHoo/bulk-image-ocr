@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { EPMSType, EIMType } from '../shared/typings';
+import { EPMSType, EIMType } from '@/shared/typings';
 
 export const getHandlers = (basePath: string) => [
   rest.get(basePath + '/health-check/liveness', (req, res, ctx) => {

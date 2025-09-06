@@ -1,4 +1,4 @@
-import { EMediaType } from 'typings/media';
+import { EMediaType } from '@/typings/media';
 import { IMedia, IMediaService } from './media.interface';
 import {
   createMediaHash,

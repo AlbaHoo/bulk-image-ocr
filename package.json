@@ -32,14 +32,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "build:fallback": "react-scripts build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "api-gen": "npx @openapitools/openapi-generator-cli generate -i http://localhost:8085/swagger-json -g typescript-axios -o src/shared/api/generated"
-  },
-  "engines": {
-    "node": ">=14.17.5"
   },
   "eslintConfig": {
     "extends": [
@@ -60,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@testing-library/react": "^13.3.0",
     "@types/react-syntax-highlighter": "^15.5.2",
     "http-proxy-middleware": "^2.0.6",

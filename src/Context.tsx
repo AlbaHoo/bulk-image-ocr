@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react';
-import { EAgentStatus } from 'shared/typings';
+import { EAgentStatus } from '@/shared/typings';
 
 export interface IGlobalContextValue {
   agentStatus: EAgentStatus;

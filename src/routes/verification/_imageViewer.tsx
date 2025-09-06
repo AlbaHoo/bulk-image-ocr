@@ -3,10 +3,10 @@ import styles from './index.module.css';
 import { message, Button } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
-import { downloadFile } from 'platforms';
-import useCamera from 'hooks/useCamera';
-import { getSignature, signImage } from 'utils/image';
-import { Apis } from 'services';
+import { downloadFile } from '@/platforms';
+import useCamera from '@/hooks/useCamera';
+import { getSignature, signImage } from '@/utils/image';
+import { Apis } from '@/services';
 
 interface IPropTypes {
   containerHeight: number;

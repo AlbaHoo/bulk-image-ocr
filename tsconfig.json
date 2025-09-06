@@ -21,7 +21,17 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
-    "baseUrl": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/Context": ["src/Context"],
+      "@/App": ["src/App"],
+      "@/platforms": ["src/platforms"],
+      "@/shared/*": ["src/shared/*"],
+      "@/routes/*": ["src/routes/*"],
+      "@/components/*": ["src/components/*"],
+      "@/utils/*": ["src/utils/*"]
+    }
   },
   "include": [
     "src", "./typings.d.ts"

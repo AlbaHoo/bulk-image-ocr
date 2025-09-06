@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { message } from 'antd';
-import { IMfaRequiredResult } from 'typings/auth';
-import { APIFunctionError } from 'utils/error';
+import { IMfaRequiredResult } from '@/typings/auth';
+import { APIFunctionError } from '@/utils/error';
 
 export enum EAuthCheckStep {
   password = 'password',

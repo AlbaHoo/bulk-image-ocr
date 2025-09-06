@@ -1,9 +1,9 @@
 import React, { FormEventHandler, useCallback, useMemo, useRef } from 'react';
 import { Space, Form, Button, Input, message } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import RecaptchaSubmitButton, { IRecaptchaSubmitButtonRef } from 'components/recaptchaSubmitButton';
-import ExplicitRecaptcha, { IExplicitRecaptchaRef } from 'components/explicitRecaptcha';
-import CountdownText from 'components/countdownText';
+import RecaptchaSubmitButton, { IRecaptchaSubmitButtonRef } from '@/components/recaptchaSubmitButton';
+import ExplicitRecaptcha, { IExplicitRecaptchaRef } from '@/components/explicitRecaptcha';
+import CountdownText from '@/components/countdownText';
 
 interface IPropTypes {
   secondaryAction?: any;

@@ -1,5 +1,5 @@
-import { EStorageProperty } from 'interfaces/IClientApi';
-import { lwsClientAPI } from 'platforms';
+import { EStorageProperty } from '@/interfaces/IClientApi';
+import { lwsClientAPI } from '@/platforms';
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 

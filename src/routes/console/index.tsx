@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Tabs } from 'antd';
 import Overview from './_overview';
-import LogPanel from 'components/logPanel';
-import useWindowSize from 'hooks/useWindowSize';
+import LogPanel from '@/components/logPanel';
+import useWindowSize from '@/hooks/useWindowSize';
 import styles from './index.module.css';
 
 const { TabPane } = Tabs;

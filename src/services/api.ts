@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { APIFunctionError } from 'utils/error';
-import { IMfaRequiredResult, IAuthorizeAgentResponse } from 'typings/auth';
+import { APIFunctionError } from '@/utils/error';
+import { IMfaRequiredResult, IAuthorizeAgentResponse } from '@/typings/auth';
 
 const LWS_SERVER_HOST = process.env.LWS_SERVER_HOST;
 

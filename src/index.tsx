@@ -3,19 +3,19 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import * as Sentry from '@sentry/browser';
 import { BrowserTracing } from '@sentry/tracing';
-import GlobalProvider from './Context';
-import App from './App';
-import Bridge from './routes/bridge';
-import Exception404 from 'components/exception/404';
-import reportWebVitals from './reportWebVitals';
-import OcrPage from './routes/ocr-page';
-import ImageListDetail from './routes/image-list-detail';
+import GlobalProvider from '@/Context';
+import App from '@/App';
+import Bridge from '@/routes/bridge';
+import Exception404 from '@/components/exception/404';
+import reportWebVitals from '@/reportWebVitals';
+import OcrPage from '@/routes/ocr-page';
+import ImageListDetail from '@/routes/image-list-detail';
 
-import './index.css';
-import Setup from 'routes/setup';
-import { overrideConsoleLogWithWinston } from 'utils/logger';
-import Signup from 'routes/signup';
-import Verification from 'routes/verification';
+import '@/index.css';
+import Setup from '@/routes/setup';
+import { overrideConsoleLogWithWinston } from '@/utils/logger';
+import Signup from '@/routes/signup';
+import Verification from '@/routes/verification';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 

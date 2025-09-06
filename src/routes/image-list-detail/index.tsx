@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, Tabs, Descriptions, Button, message, Spin, Row, Col, Space, Alert } from 'antd';
 import { ArrowLeftOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Apis } from '../../services';
-import { ImageListItem } from '../../services/image-list.service';
-import { ImageItem } from '../../services/image-item.service';
-import ImagePlaceholder from '../../components/ImagePlaceholder';
+import { Apis } from '@/services';
+import { ImageListItem } from '@/services/image-list.service';
+import { ImageItem } from '@/services/image-item.service';
+import ImagePlaceholder from '@/components/ImagePlaceholder';
 
 const { TabPane } = Tabs;
 

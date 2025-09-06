@@ -1,5 +1,5 @@
-import { EAgentErrorCode, EPmsErrorCode, EImErrorCode } from '../typings/error';
-import { EPMSType, EIMType, IPMSOption, IIMOption } from '../typings';
+import { EAgentErrorCode, EPmsErrorCode, EImErrorCode } from '@/shared/typings/error';
+import { EPMSType, EIMType, IPMSOption, IIMOption } from '@/shared/typings';
 
 export function getAgentErrorCode(errName: string) {
   const findedErrorCode = Object.values(EAgentErrorCode).find((value) => errName.includes(value));

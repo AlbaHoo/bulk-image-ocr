@@ -1,8 +1,8 @@
 import { Capacitor } from '@capacitor/core';
-import { IClientApi } from 'interfaces/IClientApi';
-import { BrowserClientApi } from 'clientApiWeb';
-import { AndroidClientApi } from 'clientApiAndroid';
-import { downloadImageAsHtmlElement } from 'utils/image';
+import { IClientApi } from '@/interfaces/IClientApi';
+import { BrowserClientApi } from '@/clientApiWeb';
+import { AndroidClientApi } from '@/clientApiAndroid';
+import { downloadImageAsHtmlElement } from '@/utils/image';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { message } from 'antd';
 

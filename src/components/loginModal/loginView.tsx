@@ -1,10 +1,10 @@
 import React from 'react';
 import { Typography } from 'antd';
-import useAuthCheck from 'hooks/useAuthCheck';
+import useAuthCheck from '@/hooks/useAuthCheck';
 import LoginWithEmailView from './loginWithEmailView';
-import { Apis } from 'services';
+import { Apis } from '@/services';
 import styles from './index.module.css';
-import { lwsClientAPI } from 'platforms';
+import { lwsClientAPI } from '@/platforms';
 
 const { Title, Text } = Typography;
 

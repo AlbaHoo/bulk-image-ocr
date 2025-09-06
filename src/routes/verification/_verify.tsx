@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { generateImageHash } from 'utils/md5';
+import { generateImageHash } from '@/utils/md5';
 import styles from './index.module.css';
-import { Apis } from 'services';
+import { Apis } from '@/services';
 import { Tag } from 'antd';
 
 interface IPropTypes {

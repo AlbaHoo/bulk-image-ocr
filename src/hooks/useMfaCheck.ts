@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { EAPIFunctionErrorTypes } from 'typings/error';
-import { APIFunctionError } from 'utils/error';
+import { EAPIFunctionErrorTypes } from '@/typings/error';
+import { APIFunctionError } from '@/utils/error';
 import { message } from 'antd';
 
 export default function useMfaCheck<SUCCESS_RESULT>(options: {

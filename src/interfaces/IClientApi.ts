@@ -1,4 +1,4 @@
-import { ILocalActivity, ILocalActivityOptions } from '../shared/typings';
+import { ILocalActivity, ILocalActivityOptions } from '@/shared/typings';
 
 export enum EStorageProperty {
   userId = 'userId',

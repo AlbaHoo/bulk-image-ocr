@@ -2,7 +2,7 @@
 
 // import { EPositionType, GymAction, GymRecord, IMediaFilter } from '@/typings/action';
 import Parse from 'parse';
-import { EMediaType, IMediaFilter, MediaHash } from 'typings/media';
+import { EMediaType, IMediaFilter, MediaHash } from '@/typings/media';
 
 // For development: .env.local
 // Parse.initialize("YOUR_APP_ID", "YOUR_JAVASCRIPT_KEY");

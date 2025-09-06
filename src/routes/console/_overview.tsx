@@ -2,21 +2,21 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Typography, Space, Alert, Button, Table, Tag, message } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 import * as Sentry from '@sentry/browser';
-import FullScreenLoading from 'components/fullScreenLoading';
-import LoginModal from 'components/loginModal';
-import { GlobalContext } from '../../Context';
+import FullScreenLoading from '@/components/fullScreenLoading';
+import LoginModal from '@/components/loginModal';
+import { GlobalContext } from '@/Context';
 import {
   EIMType,
   IItemsAndCount,
   ILocalActivity,
   EAgentStatus,
   ELocalActivityStatus,
-} from 'shared/typings';
-import { getIMOptionLabel, getErrorPMSType, getErrorIMTypes } from 'shared/config';
-import { formatToDateTimeStr } from 'shared/utils';
-import { upperFirstLetter } from 'utils';
+} from '@/shared/typings';
+import { getIMOptionLabel, getErrorPMSType, getErrorIMTypes } from '@/shared/config';
+import { formatToDateTimeStr } from '@/shared/utils';
+import { upperFirstLetter } from '@/utils';
 import styles from './index.module.css';
-import { lwsClientAPI } from 'platforms';
+import { lwsClientAPI } from '@/platforms';
 
 const { Title, Text } = Typography;
 

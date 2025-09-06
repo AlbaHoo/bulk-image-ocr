@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Tabs } from 'antd';
 import ImageViewer from './_imageViewer';
-import LogPanel from 'components/logPanel';
-import useWindowSize from 'hooks/useWindowSize';
+import LogPanel from '@/components/logPanel';
+import useWindowSize from '@/hooks/useWindowSize';
 import styles from './index.module.css';
 import Verify from './_verify';
-import withAuth from 'hoc/withAuth';
+import withAuth from '@/hoc/withAuth';
 import VerifiedList from './_verifiedList';
 
 const { TabPane } = Tabs;

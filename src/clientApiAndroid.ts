@@ -1,4 +1,4 @@
-import { BrowserClientApi } from 'clientApiWeb';
+import { BrowserClientApi } from '@/clientApiWeb';
 
 export class AndroidClientApi extends BrowserClientApi {
   platform(): string {
