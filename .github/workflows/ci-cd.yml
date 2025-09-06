@@ -31,6 +31,8 @@ jobs:
 
       - name: Build application
         run: ./build_prod
+        env:
+          CI: false
 
   deploy:
     name: Deploy to Vercel
@@ -55,6 +57,8 @@ jobs:
 
       - name: Build application with custom script
         run: ./build_prod
+        env:
+          CI: false
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
