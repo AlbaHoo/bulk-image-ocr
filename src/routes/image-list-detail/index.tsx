@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Tabs, Descriptions, Button, message, Spin, Row, Col, Space } from 'antd';
+import { Card, Tabs, Descriptions, Button, message, Spin, Row, Col, Space, Alert } from 'antd';
 import { ArrowLeftOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Apis } from '../../services';
@@ -44,12 +44,15 @@ const ImageListDetail: React.FC = () => {
 
     setImageLoading(true);
     try {
+      console.log('Fetching image items for list ID:', id);
       const imageItemService = Apis.getImageItemApi();
       const items = await imageItemService.getImageItemsByListId(id);
+      console.log('Successfully fetched image items:', items);
       setImageItems(items);
     } catch (error) {
-      message.error('获取图片列表失败');
-      console.error('Error fetching image items:', error);
+      console.error('Detailed error fetching image items:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      message.error(`获取图片列表失败: ${errorMessage}`);
     } finally {
       setImageLoading(false);
     }
@@ -196,6 +199,13 @@ const ImageListDetail: React.FC = () => {
 
     return (
       <div>
+        <Alert
+          message="提示"
+          description="首次上传图片可能需要较长时间，请耐心等待。后续上传将会更快。"
+          type="info"
+          showIcon
+          style={{ marginBottom: '16px' }}
+        />
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
           <Space>
             <Button

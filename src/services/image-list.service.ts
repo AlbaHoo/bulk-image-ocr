@@ -17,29 +17,44 @@ export class ImageListService {
   }
 
   async getImageLists(page: number = 1, pageSize: number = 20): Promise<PaginatedResult<ImageListItem>> {
-    const ImageListClass = this.getImageListClass();
-    const query = new Parse.Query(ImageListClass);
+    try {
+      const ImageListClass = this.getImageListClass();
+      const query = new Parse.Query(ImageListClass);
 
-    // Set pagination
-    query.skip((page - 1) * pageSize);
-    query.limit(pageSize);
+      // Try to filter by user for new records, but don't require it for backward compatibility
+      const currentUser = Parse.User.current();
+      console.log('Current user:', currentUser?.id);
 
-    // Get total count
-    const totalCount = await query.count();
+      // For now, comment out user filtering to allow access to existing records
+      // TODO: Add migration to set user field on existing records
+      // if (currentUser) {
+      //   query.equalTo('user', currentUser);
+      // }
 
-    // Get results
-    const results = await query.find();
+      // Set pagination
+      query.skip((page - 1) * pageSize);
+      query.limit(pageSize);
 
-    const data = results.map(item => ({
-      id: item.id,
-      name: item.get('name'),
-      columns: item.get('columns'),
-    }));
+      // Get total count
+      const totalCount = await query.count();
 
-    return {
-      data,
-      total: totalCount,
-    };
+      // Get results
+      const results = await query.find();
+
+      const data = results.map(item => ({
+        id: item.id,
+        name: item.get('name'),
+        columns: item.get('columns'),
+      }));
+
+      return {
+        data,
+        total: totalCount,
+      };
+    } catch (error) {
+      console.error('Error fetching ImageLists:', error);
+      throw error;
+    }
   }
 
   async getImageListById(id: string): Promise<ImageListItem> {
@@ -61,9 +76,20 @@ export class ImageListService {
     imageListItem.set('name', data.name);
     imageListItem.set('columns', data.columns);
 
-    const savedItem = await imageListItem.save();
+    // Create a new ACL object
+    const acl = new Parse.ACL();
+    const currentUser = Parse.User.current();
+    if (currentUser) {
+      acl.setReadAccess(currentUser, true);
+      acl.setWriteAccess(currentUser, true);
+      // Also set user pointer for query filtering
+      imageListItem.set('user', currentUser);
+    }
 
-    return {
+    // Assign the ACL to the ImageList object
+    imageListItem.setACL(acl);
+
+    const savedItem = await imageListItem.save();    return {
       id: savedItem.id,
       name: savedItem.get('name'),
       columns: savedItem.get('columns'),

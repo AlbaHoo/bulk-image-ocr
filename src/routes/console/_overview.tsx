@@ -4,7 +4,7 @@ import { SyncOutlined } from '@ant-design/icons';
 import * as Sentry from '@sentry/browser';
 import FullScreenLoading from 'components/fullScreenLoading';
 import LoginModal from 'components/loginModal';
-import { GlobalContext } from 'Context';
+import { GlobalContext } from '../../Context';
 import {
   EIMType,
   IItemsAndCount,

@@ -20,27 +20,45 @@ export class ImageItemService {
   }
 
   async getImageItemsByListId(imageListId: string): Promise<ImageItem[]> {
-    const ImageItemClass = this.getImageItemClass();
-    const ImageListClass = this.getImageListClass();
+    try {
+      const ImageItemClass = this.getImageItemClass();
+      const ImageListClass = this.getImageListClass();
 
-    const imageListPointer = new ImageListClass();
-    imageListPointer.id = imageListId;
+      const imageListPointer = new ImageListClass();
+      imageListPointer.id = imageListId;
 
-    const query = new Parse.Query(ImageItemClass);
-    query.equalTo('imageList', imageListPointer);
-    query.ascending('order');
+      const query = new Parse.Query(ImageItemClass);
+      query.equalTo('imageList', imageListPointer);
 
-    const results = await query.find();
+      // Try to filter by user for new records, but don't require it for backward compatibility
+      const currentUser = Parse.User.current();
+      console.log('Current user:', currentUser?.id);
 
-    return results.map(item => ({
-      id: item.id,
-      fileName: item.get('fileName'),
-      file: item.get('file'),
-      fileUrl: item.get('file')?.url(),
-      order: item.get('order'),
-      imageListId: imageListId,
-      ocrText: item.get('ocrText'),
-    }));
+      // For now, comment out user filtering to allow access to existing records
+      // TODO: Add migration to set user field on existing records
+      // if (currentUser) {
+      //   query.equalTo('user', currentUser);
+      // }
+
+      query.ascending('order');
+
+      console.log('Fetching ImageItems for list:', imageListId);
+      const results = await query.find();
+      console.log('Found ImageItems:', results.length);
+
+      return results.map(item => ({
+        id: item.id,
+        fileName: item.get('fileName'),
+        file: item.get('file'),
+        fileUrl: item.get('file')?.url(),
+        order: item.get('order'),
+        imageListId: imageListId,
+        ocrText: item.get('ocrText'),
+      }));
+    } catch (error) {
+      console.error('Error fetching ImageItems:', error);
+      throw error;
+    }
   }
 
   async createImageItem(data: {
@@ -64,9 +82,20 @@ export class ImageItemService {
     imageItem.set('order', data.order);
     imageItem.set('imageList', imageListPointer);
 
-    const savedItem = await imageItem.save();
+    // Create a new ACL object
+    const acl = new Parse.ACL();
+    const currentUser = Parse.User.current();
+    if (currentUser) {
+      acl.setReadAccess(currentUser, true);
+      acl.setWriteAccess(currentUser, true);
+      // Also set user pointer for query filtering
+      imageItem.set('user', currentUser);
+    }
 
-    return {
+    // Assign the ACL to the ImageItem object
+    imageItem.setACL(acl);
+
+    const savedItem = await imageItem.save();    return {
       id: savedItem.id,
       fileName: savedItem.get('fileName'),
       file: savedItem.get('file'),
