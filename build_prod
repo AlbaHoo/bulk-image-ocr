@@ -1,0 +1,6 @@
+#!/bin/sh
+REACT_APP_PARSE_APP_ID=jitsi
+REACT_APP_PARSE_JAVASCRIPT_KEY=myJavaScriptKey
+REACT_APP_PARSE_SERVER_URL=https://parse.tenty.co/jitsi
+rm -rf build
+REACT_APP_PARSE_APP_ID=jitsi REACT_APP_PARSE_JAVASCRIPT_KEY=myJavaScriptKey REACT_APP_PARSE_SERVER_URL=http://parse.tenty.co/jitsi npm run build

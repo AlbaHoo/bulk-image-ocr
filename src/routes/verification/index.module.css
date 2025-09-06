@@ -1,0 +1,53 @@
+.container {
+  height: 100%;
+  padding: 0 20px;
+}
+
+:global(.ant-tabs-top) {
+  height: 100%;
+}
+
+:global(.ant-tabs-content-top) {
+  height: 100%;
+}
+
+.overview {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.createContainer {
+  display: flex;
+  width: fit-content;
+  gap: 16px;
+  flex-direction: column;
+}
+
+.cameraContainer {
+  width: 250px;
+}
+
+.buttons {
+  display: flex;
+  width: fit-content;
+  gap: 8px;
+  flex-direction: row;
+}
+
+.imageContainer {
+  width: 250px;
+}
+
+.videoContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.videoButtons {
+  position: absolute;
+  top: 10px; /* Adjust as needed */
+  left: 10px; /* Adjust as needed */
+  display: flex;
+  gap: 10px; /* Adjust as needed */
+}
