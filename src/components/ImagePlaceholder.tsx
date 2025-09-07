@@ -13,6 +13,7 @@ interface ImagePlaceholderProps {
   onImageUploaded: (item: ImageItem) => void;
   onImageDeleted: (imageId: string) => void;
   onTextUpdated: (order: number, text: string) => void;
+  columns: number;
 }
 
 type UploadState = 'idle' | 'uploading' | 'analyzing' | 'saving' | 'complete';
@@ -24,9 +25,14 @@ const ImagePlaceholder: React.FC<ImagePlaceholderProps> = ({
   onImageUploaded,
   onImageDeleted,
   onTextUpdated,
+  columns,
 }) => {
   const [uploadState, setUploadState] = useState<UploadState>('idle');
   const [showFullText, setShowFullText] = useState(false);
+
+  // Calculate row and column indices (1-based)
+  const rowIndex = Math.floor(order / columns) + 1;
+  const columnIndex = (order % columns) + 1;
 
   const handleFileUpload = async (file: File) => {
     console.log('Starting upload for order:', order);
@@ -185,7 +191,13 @@ const ImagePlaceholder: React.FC<ImagePlaceholderProps> = ({
             <Image
               src={existingItem.fileUrl}
               alt={existingItem.fileName}
-              style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+              style={{ 
+                maxWidth: '100%', 
+                maxHeight: '100px', 
+                width: 'auto', 
+                height: 'auto',
+                objectFit: 'contain' 
+              }}
             />
             <Button
               type="text"
@@ -217,7 +229,7 @@ const ImagePlaceholder: React.FC<ImagePlaceholderProps> = ({
         )}
       </div>
       <div style={{ textAlign: 'center', marginTop: '4px', fontSize: '12px', color: isProcessing ? '#1890ff' : '#999' }}>
-        位置 {order} {isProcessing && `(${stateDisplay?.text})`}
+        位置 [{rowIndex},{columnIndex}] {isProcessing && `(${stateDisplay?.text})`}
       </div>
       {renderOcrText()}
     </div>

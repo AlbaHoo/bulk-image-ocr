@@ -1,0 +1,26 @@
+/* Desktop Grid - show on larger screens */
+.desktopGrid {
+  display: grid;
+}
+
+.mobileGrid {
+  display: none;
+}
+
+/* Mobile Grid - show on smaller screens */
+@media (max-width: 768px) {
+  .desktopGrid {
+    display: none;
+  }
+
+  .mobileGrid {
+    display: block;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .desktopGrid {
+    gap: 12px; /* Slightly smaller gap on tablets */
+  }
+}

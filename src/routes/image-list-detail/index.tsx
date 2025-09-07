@@ -6,6 +6,8 @@ import { Apis } from '@/services';
 import { ImageListItem } from '@/services/image-list.service';
 import { ImageItem } from '@/services/image-item.service';
 import ImagePlaceholder from '@/components/ImagePlaceholder';
+import MobileImageGrid from '@/components/MobileImageGrid';
+import styles from './index.module.css';
 
 const { TabPane } = Tabs;
 
@@ -192,6 +194,7 @@ const ImageListDetail: React.FC = () => {
             onImageUploaded={handleImageUploaded}
             onImageDeleted={handleImageDeleted}
             onTextUpdated={handleTextUpdated}
+            columns={columns}
           />
         </div>
       );
@@ -234,14 +237,25 @@ const ImageListDetail: React.FC = () => {
           </Space>
         </div>
         <div
+          className={styles.desktopGrid}
           style={{
-            display: 'grid',
             gridTemplateColumns: `repeat(${columns}, 1fr)`,
             gap: '16px',
             width: '100%'
           }}
         >
           {slots}
+        </div>
+        <div className={styles.mobileGrid}>
+          <MobileImageGrid
+            columns={columns}
+            imageItems={imageItems}
+            imageListId={id!}
+            additionalRows={additionalRows}
+            onImageUploaded={handleImageUploaded}
+            onImageDeleted={handleImageDeleted}
+            onTextUpdated={handleTextUpdated}
+          />
         </div>
       </div>
     );
