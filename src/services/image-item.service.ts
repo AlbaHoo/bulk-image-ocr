@@ -108,8 +108,8 @@ export class ImageItemService {
 
   async deleteImageItem(id: string): Promise<void> {
     const ImageItemClass = this.getImageItemClass();
-    const query = new Parse.Query(ImageItemClass);
-    const imageItem = await query.get(id);
+    const imageItem = new ImageItemClass();
+    imageItem.id = id;
 
     await imageItem.destroy();
   }
@@ -147,10 +147,10 @@ export class ImageItemService {
 
   async updateImageItemOcrText(id: string, ocrText: string): Promise<ImageItem> {
     const ImageItemClass = this.getImageItemClass();
-    const query = new Parse.Query(ImageItemClass);
-    const imageItem = await query.get(id);
-
+    const imageItem = new ImageItemClass();
+    imageItem.id = id;
     imageItem.set('ocrText', ocrText);
+
     const savedItem = await imageItem.save();
 
     return {
@@ -159,7 +159,7 @@ export class ImageItemService {
       file: savedItem.get('file'),
       fileUrl: savedItem.get('file')?.url(),
       order: savedItem.get('order'),
-      imageListId: savedItem.get('imageList').id,
+      imageListId: savedItem.get('imageList')?.id,
       ocrText: savedItem.get('ocrText'),
     };
   }
