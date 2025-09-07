@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Tabs, Descriptions, Button, message, Spin, Row, Col, Space, Alert } from 'antd';
+import { Card, Tabs, Descriptions, Button, message, Spin, Space, Alert } from 'antd';
 import { ArrowLeftOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Apis } from '@/services';
@@ -184,7 +184,7 @@ const ImageListDetail: React.FC = () => {
       const existingItem = imageItems.find(item => item.order === i) || null;
 
       slots.push(
-        <Col span={24 / columns} key={i}>
+        <div key={i} style={{ minHeight: '180px' }}>
           <ImagePlaceholder
             order={i}
             imageListId={id!}
@@ -193,7 +193,7 @@ const ImageListDetail: React.FC = () => {
             onImageDeleted={handleImageDeleted}
             onTextUpdated={handleTextUpdated}
           />
-        </Col>
+        </div>
       );
     }
 
@@ -233,9 +233,16 @@ const ImageListDetail: React.FC = () => {
             </Button>
           </Space>
         </div>
-        <Row gutter={[16, 16]}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${columns}, 1fr)`,
+            gap: '16px',
+            width: '100%'
+          }}
+        >
           {slots}
-        </Row>
+        </div>
       </div>
     );
   };
