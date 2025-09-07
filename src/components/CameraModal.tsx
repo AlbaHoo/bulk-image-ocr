@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Button, message, Space, Typography, Upload } from 'antd';
 import { CloseOutlined, CameraOutlined, ReloadOutlined, ArrowRightOutlined, UploadOutlined } from '@ant-design/icons';
-import { Apis } from '@/services';
-import { ImageItem } from '@/services/image-item.service';
 
 const { Title, Text } = Typography;
 
@@ -12,10 +10,10 @@ interface CameraModalProps {
   imageListId: string;
   columns: number;
   startPosition?: number;
-  onImageUploaded: (item: ImageItem) => void;
+  onImageCaptured: (file: File, position: number) => void; // Changed from onImageUploaded
 }
 
-type CameraState = 'idle' | 'camera' | 'video-ready' | 'captured' | 'uploading';
+type CameraState = 'idle' | 'camera' | 'video-ready' | 'captured';
 
 const CameraModal: React.FC<CameraModalProps> = ({
   visible,
@@ -23,7 +21,7 @@ const CameraModal: React.FC<CameraModalProps> = ({
   imageListId,
   columns,
   startPosition = 0,
-  onImageUploaded,
+  onImageCaptured,
 }) => {
   const [currentPosition, setCurrentPosition] = useState(startPosition);
   const [cameraState, setCameraState] = useState<CameraState>('idle');
@@ -342,46 +340,33 @@ const CameraModal: React.FC<CameraModalProps> = ({
     });
   };
 
+  const base64ToFile = (base64Data: string, fileName: string): File => {
+    // Convert base64 to blob
+    const byteCharacters = atob(base64Data.split(',')[1]);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'image/jpeg' });
+
+    // Create File object
+    return new File([blob], fileName, { type: 'image/jpeg' });
+  };
+
   const uploadAndNext = async () => {
     if (!capturedImage) return;
-
-    setCameraState('uploading');
 
     try {
       // Extract base64 data and resize for OCR
       const base64Data = await resizeImageForOCR(capturedImage);
 
-      // Upload image
-      const imageItemService = Apis.getImageItemApi();
+      // Convert to File object
       const fileName = `camera-${Date.now()}.jpg`;
+      const file = base64ToFile(`data:image/jpeg;base64,${base64Data}`, fileName);
 
-      const newItem = await imageItemService.createImageItem({
-        fileName,
-        fileData: { base64: base64Data },
-        order: currentPosition,
-        imageListId,
-      });
-
-      // Update grid immediately
-      onImageUploaded(newItem);
-      message.success(`位置 [${rowIndex},${columnIndex}] 上传成功`);
-
-      // Start OCR in background
-      const ocrService = Apis.getOcrApi();
-      ocrService.ocrFromBase64(base64Data)
-        .then(ocrResult => {
-          const extractedText = ocrResult.boxes.map(box => box.text).join(' ');
-          return imageItemService.updateImageItemOcrText(newItem.id, extractedText);
-        })
-        .then(updatedItem => {
-          // Update grid with OCR text
-          onImageUploaded(updatedItem);
-          message.success(`位置 [${rowIndex},${columnIndex}] 文字识别完成`);
-        })
-        .catch(error => {
-          console.error('OCR failed:', error);
-          message.error('文字识别失败');
-        });
+      // Pass file to parent component to handle through ImagePlaceholder
+      onImageCaptured(file, currentPosition);
 
       // Move to next position
       setCurrentPosition(prev => prev + 1);
@@ -390,71 +375,24 @@ const CameraModal: React.FC<CameraModalProps> = ({
       setCameraState('camera');
 
     } catch (error) {
-      console.error('Upload failed:', error);
-      message.error('上传失败');
+      console.error('Failed to process captured image:', error);
+      message.error('图片处理失败');
       setCameraState('captured');
     }
   };
 
   const handleFileUpload = async (file: File) => {
-    setCameraState('uploading');
-
     try {
-      // Read file as base64
-      const base64Data = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const result = e.target?.result as string;
-          const base64 = result?.split(',')[1];
-          if (base64) {
-            resolve(base64);
-          } else {
-            reject(new Error('Failed to read file'));
-          }
-        };
-        reader.onerror = () => reject(new Error('File reading failed'));
-        reader.readAsDataURL(file);
-      });
-
-      // Resize for OCR
-      const resizedBase64 = await resizeImageForOCR(`data:image/jpeg;base64,${base64Data}`);
-
-      // Upload image
-      const imageItemService = Apis.getImageItemApi();
-      const newItem = await imageItemService.createImageItem({
-        fileName: file.name,
-        fileData: { base64: resizedBase64 },
-        order: currentPosition,
-        imageListId,
-      });
-
-      // Update grid immediately
-      onImageUploaded(newItem);
-      message.success(`位置 [${rowIndex},${columnIndex}] 上传成功`);
-
-      // Start OCR in background
-      const ocrService = Apis.getOcrApi();
-      ocrService.ocrFromBase64(resizedBase64)
-        .then(ocrResult => {
-          const extractedText = ocrResult.boxes.map(box => box.text).join(' ');
-          return imageItemService.updateImageItemOcrText(newItem.id, extractedText);
-        })
-        .then(updatedItem => {
-          onImageUploaded(updatedItem);
-          message.success(`位置 [${rowIndex},${columnIndex}] 文字识别完成`);
-        })
-        .catch(error => {
-          console.error('OCR failed:', error);
-          message.error('文字识别失败');
-        });
+      // Pass file directly to parent component to handle through ImagePlaceholder
+      onImageCaptured(file, currentPosition);
 
       // Move to next position
       setCurrentPosition(prev => prev + 1);
       setCameraState('camera');
 
     } catch (error) {
-      console.error('Upload failed:', error);
-      message.error('上传失败');
+      console.error('Failed to process file:', error);
+      message.error('文件处理失败');
       setCameraState('idle');
     }
   };
@@ -612,19 +550,9 @@ const CameraModal: React.FC<CameraModalProps> = ({
                 icon={<ArrowRightOutlined />}
                 onClick={uploadAndNext}
               >
-                下一张
+                确认并下一张
               </Button>
             </Space>
-          </div>
-        </div>
-      );
-    }
-
-    if (cameraState === 'uploading') {
-      return (
-        <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-          <div style={{ marginBottom: '20px' }}>
-            <Text>正在上传...</Text>
           </div>
         </div>
       );

@@ -8,9 +8,12 @@ interface MobileImageGridProps {
   imageItems: ImageItem[];
   imageListId: string;
   additionalRows: number;
-  onImageUploaded: (item: ImageItem) => void;
+  cameraFiles: { [position: number]: File };
+  onImageUpload: (order: number, file: File) => Promise<ImageItem>;
+  onImageOcrAnalysis: (order: number, base64Data: string, imageItem?: ImageItem) => Promise<void>;
+  onImageOcrTextUpdate: (order: number, text: string) => Promise<void>;
   onImageDeleted: (imageId: string) => void;
-  onTextUpdated: (order: number, text: string) => void;
+  onCameraFileProcessed: (position: number) => void;
 }
 
 const MobileImageGrid: React.FC<MobileImageGridProps> = ({
@@ -18,9 +21,12 @@ const MobileImageGrid: React.FC<MobileImageGridProps> = ({
   imageItems,
   imageListId,
   additionalRows,
-  onImageUploaded,
+  cameraFiles,
+  onImageUpload,
+  onImageOcrAnalysis,
+  onImageOcrTextUpdate,
   onImageDeleted,
-  onTextUpdated,
+  onCameraFileProcessed,
 }) => {
   const maxOrder = imageItems.length > 0 ? Math.max(...imageItems.map(item => item.order)) : -1;
   const minRequiredRows = imageItems.length > 0 ? Math.ceil((maxOrder + 1) / columns) : 1;
@@ -47,9 +53,12 @@ const MobileImageGrid: React.FC<MobileImageGridProps> = ({
           order={i}
           imageListId={imageListId}
           existingItem={existingItem}
-          onImageUploaded={onImageUploaded}
+          cameraFile={cameraFiles[i]}
+          onImageUpload={onImageUpload}
+          onImageOcrAnalysis={onImageOcrAnalysis}
+          onImageOcrTextUpdate={onImageOcrTextUpdate}
           onImageDeleted={onImageDeleted}
-          onTextUpdated={onTextUpdated}
+          onCameraFileProcessed={onCameraFileProcessed}
           columns={columns}
         />
       </Card>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Upload, Image, message, Spin, Typography } from 'antd';
 import { PlusOutlined, DeleteOutlined, LoadingOutlined, EyeOutlined } from '@ant-design/icons';
 import { Apis } from '@/services';
@@ -10,22 +10,30 @@ interface ImagePlaceholderProps {
   order: number;
   imageListId: string;
   existingItem: ImageItem | null;
-  onImageUploaded: (item: ImageItem) => void;
   onImageDeleted: (imageId: string) => void;
-  onTextUpdated: (order: number, text: string) => void;
   columns: number;
+  // New camera file prop
+  cameraFile?: File;
+  // New centralized async methods
+  onImageUpload?: (order: number, file: File) => Promise<ImageItem>;
+  onImageOcrAnalysis?: (order: number, base64Data: string, imageItem?: ImageItem) => Promise<void>;
+  onImageOcrTextUpdate?: (order: number, text: string) => Promise<void>;
+  // Callback to clear camera file after processing
+  onCameraFileProcessed?: (order: number) => void;
 }
 
 type UploadState = 'idle' | 'uploading' | 'analyzing' | 'saving' | 'complete';
 
 const ImagePlaceholder: React.FC<ImagePlaceholderProps> = ({
   order,
-  imageListId,
   existingItem,
-  onImageUploaded,
   onImageDeleted,
-  onTextUpdated,
   columns,
+  cameraFile,
+  onImageUpload,
+  onImageOcrAnalysis,
+  onImageOcrTextUpdate,
+  onCameraFileProcessed,
 }) => {
   const [uploadState, setUploadState] = useState<UploadState>('idle');
   const [showFullText, setShowFullText] = useState(false);
@@ -33,6 +41,56 @@ const ImagePlaceholder: React.FC<ImagePlaceholderProps> = ({
   // Calculate row and column indices (1-based)
   const rowIndex = Math.floor(order / columns) + 1;
   const columnIndex = (order % columns) + 1;
+
+  // Handle camera file when provided
+  useEffect(() => {
+    console.log('Camera file effect triggered ***');
+    console.log({
+      order,
+      existingItem,
+      onImageDeleted,
+      columns,
+      cameraFile,
+      onImageUpload,
+      onImageOcrAnalysis,
+      onImageOcrTextUpdate,
+      onCameraFileProcessed,
+    });
+    if (cameraFile && onImageUpload && onImageOcrAnalysis && onImageOcrTextUpdate) {
+      console.log(`Processing camera file for position [${rowIndex}, ${columnIndex}] (order: ${order})`);
+
+      // Clear the camera file immediately to prevent re-renders from causing duplicate processing
+      onCameraFileProcessed?.(order);
+
+      const processCameraFile = async () => {
+        try {
+          // Set uploading state
+          setUploadState('uploading');
+
+          // First upload the image and get the created item
+          const createdItem = await onImageUpload(order, cameraFile);
+
+          // Set analyzing state
+          setUploadState('analyzing');
+
+          // Then process OCR with the created item
+          const base64 = await resizeImageForOCR(cameraFile);
+          await onImageOcrAnalysis(order, base64, createdItem);
+
+          // Set complete state
+          setUploadState('complete');
+          setTimeout(() => setUploadState('idle'), 1000);
+
+        } catch (error) {
+          console.error('Error processing camera file:', error);
+          message.error('处理照片时出错');
+          setUploadState('idle');
+        }
+      };
+
+      processCameraFile();
+    }
+  }, [cameraFile, order]); // Include all dependencies
 
   const resizeImageForOCR = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -86,53 +144,28 @@ const ImagePlaceholder: React.FC<ImagePlaceholderProps> = ({
 
   const handleFileUpload = async (file: File) => {
     console.log('Starting upload for order:', order);
-    setUploadState('uploading');
 
-    try {
-      // Upload image first
-      await new Promise(resolve => setTimeout(resolve, 100));
+    // Use the centralized methods
+    if (onImageUpload && onImageOcrAnalysis && onImageOcrTextUpdate) {
+      try {
+        setUploadState('uploading');
+        const createdItem = await onImageUpload(order, file);
 
-      console.log('Resizing image for OCR optimization...');
-      const base64 = await resizeImageForOCR(file);
+        setUploadState('analyzing');
+        const base64 = await resizeImageForOCR(file);
+        await onImageOcrAnalysis(order, base64, createdItem);
 
-      console.log('File processed and resized, uploading to server...');
-      const imageItemService = Apis.getImageItemApi();
-      const newItem = await imageItemService.createImageItem({
-        fileName: file.name,
-        fileData: { base64 },
-        order,
-        imageListId,
-      });
-
-      console.log('Upload completed, showing image immediately');
-      // Show image immediately after upload
-      setUploadState('idle');
-      onImageUploaded(newItem);
-      message.success('图片上传完成，正在进行文字识别...');
-
-      // Continue OCR analysis in background
-      setUploadState('analyzing');
-      console.log('Starting OCR analysis in background...');
-
-      const ocrService = Apis.getOcrApi();
-      const ocrResult = await ocrService.ocrFromBase64(base64);
-
-      console.log('OCR analysis completed, saving text...');
-      setUploadState('saving');
-
-      // Save OCR text to ImageItem
-      const extractedText = ocrResult.boxes.map(box => box.text).join(' ');
-      const updatedItem = await imageItemService.updateImageItemOcrText(newItem.id, extractedText);
-
-      console.log('Text saved successfully');
-      setUploadState('complete');
-      setTimeout(() => setUploadState('idle'), 1000); // Clear processing state after 1s
-      message.success('文字识别完成');
-      onTextUpdated(order, extractedText);
-    } catch (error) {
-      message.error('图片上传或分析失败');
-      console.error('Error uploading image or OCR:', error);
-      setUploadState('idle');
+        setUploadState('complete');
+        setTimeout(() => setUploadState('idle'), 1000);
+        message.success('图片上传和文字识别完成');
+      } catch (error) {
+        message.error('图片上传或分析失败');
+        console.error('Error uploading image or OCR:', error);
+        setUploadState('idle');
+      }
+    } else {
+      message.error('上传方法未配置');
+      console.error('Upload methods not provided');
     }
   };
 
@@ -208,8 +241,6 @@ const ImagePlaceholder: React.FC<ImagePlaceholderProps> = ({
 
   const isProcessing = ['uploading', 'analyzing', 'saving'].includes(uploadState);
   const stateDisplay = getStateDisplay();
-
-  console.log('Rendering ImagePlaceholder:', { order, uploadState, hasExistingItem: !!existingItem });
 
   return (
     <div style={{ marginBottom: '16px' }}>
