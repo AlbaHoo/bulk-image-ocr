@@ -7,6 +7,18 @@
   display: none;
 }
 
+/* Camera button styling */
+.cameraButton {
+  background: linear-gradient(135deg, #1890ff, #52c41a);
+  border: none;
+  font-weight: 500;
+}
+
+.cameraButton:hover {
+  background: linear-gradient(135deg, #40a9ff, #73d13d);
+  border: none;
+}
+
 /* Mobile Grid - show on smaller screens */
 @media (max-width: 768px) {
   .desktopGrid {
@@ -15,6 +27,14 @@
 
   .mobileGrid {
     display: block;
+  }
+
+  /* Make camera button more prominent on mobile */
+  .cameraButton {
+    width: 100%;
+    margin-top: 8px;
+    height: 44px;
+    font-size: 16px;
   }
 }
 

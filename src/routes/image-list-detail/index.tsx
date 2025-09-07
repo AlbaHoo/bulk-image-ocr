@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Tabs, Descriptions, Button, message, Spin, Space, Alert } from 'antd';
-import { ArrowLeftOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, PlusOutlined, DownloadOutlined, CameraOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Apis } from '@/services';
 import { ImageListItem } from '@/services/image-list.service';
 import { ImageItem } from '@/services/image-item.service';
 import ImagePlaceholder from '@/components/ImagePlaceholder';
 import MobileImageGrid from '@/components/MobileImageGrid';
+import CameraModal from '@/components/CameraModal';
 import styles from './index.module.css';
 
 const { TabPane } = Tabs;
@@ -20,6 +21,7 @@ const ImageListDetail: React.FC = () => {
   const [imageLoading, setImageLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('details');
   const [additionalRows, setAdditionalRows] = useState(0);
+  const [cameraModalVisible, setCameraModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchImageListDetail = async () => {
@@ -234,6 +236,14 @@ const ImageListDetail: React.FC = () => {
             >
               添加新行
             </Button>
+            <Button
+              type="primary"
+              icon={<CameraOutlined />}
+              onClick={() => setCameraModalVisible(true)}
+              className={styles.cameraButton}
+            >
+              批量拍照
+            </Button>
           </Space>
         </div>
         <div
@@ -308,6 +318,16 @@ const ImageListDetail: React.FC = () => {
           </Card>
         </TabPane>
       </Tabs>
+
+      {/* Camera Modal */}
+      <CameraModal
+        visible={cameraModalVisible}
+        onClose={() => setCameraModalVisible(false)}
+        imageListId={id!}
+        columns={imageListDetail?.columns || 1}
+        startPosition={0}
+        onImageUploaded={handleImageUploaded}
+      />
     </div>
   );
 };
