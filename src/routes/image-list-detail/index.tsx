@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Tabs, Descriptions, Button, message, Spin, Space, Alert } from 'antd';
+import { Card, Tabs, Descriptions, Button, message, Spin, Alert } from 'antd';
 import { ArrowLeftOutlined, PlusOutlined, DownloadOutlined, CameraOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Apis } from '@/services';
@@ -386,42 +386,40 @@ const ImageListDetail: React.FC = () => {
           description="首次上传图片可能需要较长时间，请耐心等待。后续上传将会更快。"
           type="info"
           showIcon
-          style={{ marginBottom: '16px' }}
+          className={styles.alertContainer}
         />
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-          <Space>
-            <Button
-              type="default"
-              icon={<DownloadOutlined />}
-              onClick={downloadCsv}
-              disabled={!imageItems.some(item => item.ocrText)}
-            >
-              下载文本
-            </Button>
-            <Button
-              type="default"
-              icon={<DownloadOutlined />}
-              onClick={downloadGridCsv}
-              disabled={!imageItems.some(item => item.ocrText)}
-            >
-              下载格式文本
-            </Button>
-            <Button
-              type="dashed"
-              icon={<PlusOutlined />}
-              onClick={addNewRow}
-            >
-              添加新行
-            </Button>
-            <Button
-              type="primary"
-              icon={<CameraOutlined />}
-              onClick={() => setCameraModalVisible(true)}
-              className={styles.cameraButton}
-            >
-              批量拍照
-            </Button>
-          </Space>
+        <div className={windowType === EWindowType.mobile ? styles.mobileActionsContainer : styles.actionsContainer}>
+          <Button
+            type="default"
+            icon={<DownloadOutlined />}
+            onClick={downloadCsv}
+            disabled={!imageItems.some(item => item.ocrText)}
+          >
+            下载文本
+          </Button>
+          <Button
+            type="default"
+            icon={<DownloadOutlined />}
+            onClick={downloadGridCsv}
+            disabled={!imageItems.some(item => item.ocrText)}
+          >
+            下载格式文本
+          </Button>
+          <Button
+            type="dashed"
+            icon={<PlusOutlined />}
+            onClick={addNewRow}
+          >
+            添加新行
+          </Button>
+          <Button
+            type="primary"
+            icon={<CameraOutlined />}
+            onClick={() => setCameraModalVisible(true)}
+          >
+            批量拍照
+          </Button>
+
         </div>
         {windowType === EWindowType.mobile ? (
           <div className={styles.mobileGrid}>
@@ -463,8 +461,8 @@ const ImageListDetail: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '24px' }}>
+    <div className={windowType === EWindowType.mobile ? styles.mobileContainer : styles.container}>
+      <div className={styles.header}>
         <Button
           icon={<ArrowLeftOutlined />}
           onClick={() => navigate('/home')}
