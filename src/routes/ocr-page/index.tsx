@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, message, Space } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Form, Input, InputNumber, message, Space, Popconfirm } from 'antd';
+import { PlusOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { Apis } from '@/services';
 import { ImageListItem } from '@/services/image-list.service';
@@ -59,6 +59,20 @@ const OcrPage: React.FC = () => {
     }
   };
 
+  const handleDeleteImageList = async (id: string, name: string) => {
+    setLoading(true);
+    try {
+      await imageListService.deleteImageList(id);
+      message.success(`已成功删除图片列表"${name}"及其所有相关数据`);
+      fetchImageList(pagination.current, pagination.pageSize);
+    } catch (error) {
+      message.error('删除失败，请重试');
+      console.error('Error deleting image list:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns = [
     {
       title: '名称',
@@ -78,6 +92,38 @@ const OcrPage: React.FC = () => {
       title: '列数',
       dataIndex: 'columns',
       key: 'columns',
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 150,
+      render: (_, record: ImageListItem) => (
+        <Space>
+          <Button
+            type="link"
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/image-list/${record.id}`)}
+            style={{ padding: 0 }}
+          >
+            查看
+          </Button>
+          <Popconfirm
+            title="确定要删除这个图片列表吗？这将删除列表中的所有图片和相关数据，此操作不可撤销。"
+            onConfirm={() => handleDeleteImageList(record.id, record.name)}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button
+              type="link"
+              danger
+              icon={<DeleteOutlined />}
+              style={{ padding: 0 }}
+            >
+              删除
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
     },
   ];
 

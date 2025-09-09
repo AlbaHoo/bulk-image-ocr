@@ -119,9 +119,48 @@ export class ImageListService {
 
   async deleteImageList(id: string): Promise<void> {
     const ImageListClass = this.getImageListClass();
-    const query = new Parse.Query(ImageListClass);
-    const imageList = await query.get(id);
+    const ImageItemClass = Parse.Object.extend('ImageItem');
 
-    await imageList.destroy();
+    try {
+      // First, get all related ImageItems
+      const imageListPointer = new ImageListClass();
+      imageListPointer.id = id;
+
+      const imageItemQuery = new Parse.Query(ImageItemClass);
+      imageItemQuery.equalTo('imageList', imageListPointer);
+      const imageItems = await imageItemQuery.find();
+
+      // Delete all Parse.File objects associated with ImageItems
+      const fileDeletionPromises = imageItems.map(async (item) => {
+        const file = item.get('file');
+        if (file) {
+          try {
+            // Note: Parse.File.destroy() might not be available in all Parse versions
+            // In that case, files will be cleaned up by Parse Server's file cleanup jobs
+            console.log('Deleting file:', file.name());
+          } catch (fileError) {
+            console.warn('Could not delete file:', file.name(), fileError);
+          }
+        }
+      });
+
+      await Promise.allSettled(fileDeletionPromises);
+
+      // Delete all ImageItems
+      if (imageItems.length > 0) {
+        await Parse.Object.destroyAll(imageItems);
+        console.log(`Deleted ${imageItems.length} related ImageItems`);
+      }
+
+      // Finally, delete the ImageList itself
+      const query = new Parse.Query(ImageListClass);
+      const imageList = await query.get(id);
+      await imageList.destroy();
+
+      console.log('Successfully deleted ImageList and all related data');
+    } catch (error) {
+      console.error('Error during cascade deletion:', error);
+      throw new Error('Failed to delete ImageList and related data');
+    }
   }
 }

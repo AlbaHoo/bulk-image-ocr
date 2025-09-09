@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Button, message, Space, Typography, Upload } from 'antd';
-import { CloseOutlined, CameraOutlined, ReloadOutlined, ArrowRightOutlined, UploadOutlined } from '@ant-design/icons';
+import { CloseOutlined, CameraOutlined, ReloadOutlined, ArrowRightOutlined, UploadOutlined, StepForwardOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 
@@ -381,6 +381,15 @@ const CameraModal: React.FC<CameraModalProps> = ({
     }
   };
 
+  const skipPosition = () => {
+    // Move to next position without uploading anything
+    setCurrentPosition(prev => prev + 1);
+    setCapturedImage(null);
+    setVideoReady(false); // Reset video ready state
+    setCameraState('camera');
+    message.info(`已跳过位置 [行 ${rowIndex}, 列 ${columnIndex}]`);
+  };
+
   const handleFileUpload = async (file: File) => {
     try {
       // Pass file directly to parent component to handle through ImagePlaceholder
@@ -406,18 +415,26 @@ const CameraModal: React.FC<CameraModalProps> = ({
           </div>
           <Text>正在初始化摄像头...</Text>
           <div style={{ marginTop: '20px' }}>
-            <Upload
-              showUploadList={false}
-              beforeUpload={(file) => {
-                handleFileUpload(file);
-                return false;
-              }}
-              accept="image/*"
-            >
-              <Button icon={<UploadOutlined />}>
-                或选择文件上传
+            <Space>
+              <Upload
+                showUploadList={false}
+                beforeUpload={(file) => {
+                  handleFileUpload(file);
+                  return false;
+                }}
+                accept="image/*"
+              >
+                <Button icon={<UploadOutlined />}>
+                  选择文件上传
+                </Button>
+              </Upload>
+              <Button
+                icon={<StepForwardOutlined />}
+                onClick={skipPosition}
+              >
+                跳过
               </Button>
-            </Upload>
+            </Space>
           </div>
         </div>
       );
@@ -499,6 +516,14 @@ const CameraModal: React.FC<CameraModalProps> = ({
                 disabled={!videoReady}
               >
                 {videoReady ? '拍照' : '等待摄像头就绪...'}
+              </Button>
+              <Button
+                type="default"
+                size="large"
+                icon={<StepForwardOutlined />}
+                onClick={skipPosition}
+              >
+                跳过
               </Button>
               {!videoReady && (
                 <Button
