@@ -11,6 +11,7 @@ interface CameraModalProps {
   columns: number;
   startPosition?: number;
   onImageCaptured: (file: File, position: number) => void; // Changed from onImageUploaded
+  onPositionChange?: (newPosition: number) => void; // New callback for position changes
 }
 
 type CameraState = 'idle' | 'camera' | 'video-ready' | 'captured';
@@ -22,6 +23,7 @@ const CameraModal: React.FC<CameraModalProps> = ({
   columns,
   startPosition = 0,
   onImageCaptured,
+  onPositionChange,
 }) => {
   const [currentPosition, setCurrentPosition] = useState(startPosition);
   const [cameraState, setCameraState] = useState<CameraState>('idle');
@@ -369,10 +371,14 @@ const CameraModal: React.FC<CameraModalProps> = ({
       onImageCaptured(file, currentPosition);
 
       // Move to next position
-      setCurrentPosition(prev => prev + 1);
+      const newPosition = currentPosition + 1;
+      setCurrentPosition(newPosition);
       setCapturedImage(null);
       setVideoReady(false); // Reset video ready state
       setCameraState('camera');
+
+      // Notify parent component about position change so it can create new rows if needed
+      onPositionChange?.(newPosition);
 
     } catch (error) {
       console.error('Failed to process captured image:', error);
@@ -383,10 +389,15 @@ const CameraModal: React.FC<CameraModalProps> = ({
 
   const skipPosition = () => {
     // Move to next position without uploading anything
-    setCurrentPosition(prev => prev + 1);
+    const newPosition = currentPosition + 1;
+    setCurrentPosition(newPosition);
     setCapturedImage(null);
     setVideoReady(false); // Reset video ready state
     setCameraState('camera');
+
+    // Notify parent component about position change so it can create new rows if needed
+    onPositionChange?.(newPosition);
+
     message.info(`已跳过位置 [行 ${rowIndex}, 列 ${columnIndex}]`);
   };
 
@@ -396,8 +407,12 @@ const CameraModal: React.FC<CameraModalProps> = ({
       onImageCaptured(file, currentPosition);
 
       // Move to next position
-      setCurrentPosition(prev => prev + 1);
+      const newPosition = currentPosition + 1;
+      setCurrentPosition(newPosition);
       setCameraState('camera');
+
+      // Notify parent component about position change so it can create new rows if needed
+      onPositionChange?.(newPosition);
 
     } catch (error) {
       console.error('Failed to process file:', error);

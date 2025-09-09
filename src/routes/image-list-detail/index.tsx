@@ -347,6 +347,23 @@ const ImageListDetail: React.FC = () => {
     });
   }, []);
 
+  const handlePositionChange = useCallback((newPosition: number) => {
+    if (!imageListDetail) return;
+    
+    const columns = imageListDetail.columns;
+    const newRowIndex = Math.floor(newPosition / columns);
+    const maxOrder = imageItems.length > 0 ? Math.max(...imageItems.map(item => item.order)) : -1;
+    const minRequiredRows = imageItems.length > 0 ? Math.ceil((maxOrder + 1) / columns) : 1;
+    const currentTotalRows = minRequiredRows + additionalRows;
+    
+    // If the new position requires more rows than currently available, add them
+    if (newRowIndex >= currentTotalRows) {
+      const rowsToAdd = newRowIndex - currentTotalRows + 1;
+      console.log(`Adding ${rowsToAdd} rows for position ${newPosition} (row ${newRowIndex + 1})`);
+      setAdditionalRows(prev => prev + rowsToAdd);
+    }
+  }, [imageListDetail, imageItems, additionalRows]);
+
   const renderImageGrid = () => {
     console.log("$$$$$$", Date.now(), "- renderImageGrid called");
     if (!imageListDetail) return null;
@@ -508,6 +525,7 @@ const ImageListDetail: React.FC = () => {
         columns={imageListDetail?.columns || 1}
         startPosition={0}
         onImageCaptured={handleImageCaptured}
+        onPositionChange={handlePositionChange}
       />
     </div>
   );
