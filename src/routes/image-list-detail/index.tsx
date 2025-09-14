@@ -349,13 +349,13 @@ const ImageListDetail: React.FC = () => {
 
   const handlePositionChange = useCallback((newPosition: number) => {
     if (!imageListDetail) return;
-    
+
     const columns = imageListDetail.columns;
     const newRowIndex = Math.floor(newPosition / columns);
     const maxOrder = imageItems.length > 0 ? Math.max(...imageItems.map(item => item.order)) : -1;
     const minRequiredRows = imageItems.length > 0 ? Math.ceil((maxOrder + 1) / columns) : 1;
     const currentTotalRows = minRequiredRows + additionalRows;
-    
+
     // If the new position requires more rows than currently available, add them
     if (newRowIndex >= currentTotalRows) {
       const rowsToAdd = newRowIndex - currentTotalRows + 1;

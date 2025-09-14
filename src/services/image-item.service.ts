@@ -19,6 +19,24 @@ export class ImageItemService {
     return Parse.Object.extend('ImageList');
   }
 
+  private sanitizeFileName(fileName: string): string {
+    // Extract the file extension from the original filename
+    const lastDotIndex = fileName.lastIndexOf('.');
+    let extension = 'jpg'; // Default extension
+
+    if (lastDotIndex > 0 && lastDotIndex < fileName.length - 1) {
+      const originalExt = fileName.substring(lastDotIndex + 1).toLowerCase();
+      // Only use common image extensions, sanitize the extension
+      const validExt = originalExt.replace(/[^\w]/g, '');
+      if (validExt && ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(validExt)) {
+        extension = validExt;
+      }
+    }
+
+    // Always generate a standardized filename with timestamp
+    return `file_${Date.now()}.${extension}`;
+  }
+
   async getImageItemsByListId(imageListId: string): Promise<ImageItem[]> {
     try {
       const ImageItemClass = this.getImageItemClass();
@@ -73,11 +91,13 @@ export class ImageItemService {
     const imageListPointer = new ImageListClass();
     imageListPointer.id = data.imageListId;
 
-    const file = new Parse.File(data.fileName, { base64: data.fileData.base64 });
+    // Sanitize the filename before creating Parse.File
+    const sanitizedFileName = this.sanitizeFileName(data.fileName);
+    const file = new Parse.File(sanitizedFileName, { base64: data.fileData.base64 });
     await file.save();
 
     const imageItem = new ImageItemClass();
-    imageItem.set('fileName', data.fileName);
+    imageItem.set('fileName', sanitizedFileName);
     imageItem.set('file', file);
     imageItem.set('order', data.order);
     imageItem.set('imageList', imageListPointer);
@@ -122,12 +142,15 @@ export class ImageItemService {
     const query = new Parse.Query(ImageItemClass);
     const imageItem = await query.get(id);
 
+    let sanitizedFileName = imageItem.get('fileName');
+
     if (data.fileName) {
-      imageItem.set('fileName', data.fileName);
+      sanitizedFileName = this.sanitizeFileName(data.fileName);
+      imageItem.set('fileName', sanitizedFileName);
     }
 
     if (data.fileData) {
-      const file = new Parse.File(data.fileName || imageItem.get('fileName'), { base64: data.fileData.base64 });
+      const file = new Parse.File(sanitizedFileName, { base64: data.fileData.base64 });
       await file.save();
       imageItem.set('file', file);
     }
