@@ -29,7 +29,16 @@ export interface ProcessedOcrResult {
 }
 
 export class OcrService {
-  private baseUrl = 'https://image.tenty.co/ocr';
+  private baseUrl = 'https://paddle-orc-cegxqqehng.cn-hangzhou.fcapp.run/ocr';
+  private username = 'tenty-image-admin';
+  private password = 'AdminPassword123!';
+
+  private getAuthHeaders(): Record<string, string> {
+    const credentials = btoa(`${this.username}:${this.password}`);
+    return {
+      'Authorization': `Basic ${credentials}`,
+    };
+  }
 
   private getDefaultOptions(): OcrRequestOptions {
     return {
@@ -68,6 +77,7 @@ export class OcrService {
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/json',
+        ...this.getAuthHeaders(),
       },
       body: JSON.stringify({
         imageBase64,
@@ -94,6 +104,7 @@ export class OcrService {
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/json',
+        ...this.getAuthHeaders(),
       },
       body: JSON.stringify({
         image_url: imageUrl,
